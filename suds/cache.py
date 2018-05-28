@@ -287,6 +287,7 @@ class ObjectCache(FileCache):
         return 'px'
 
     def get(self, id):
+        fp = None
         try:
             fp = self.getf(id)
             if fp is None:
@@ -294,6 +295,9 @@ class ObjectCache(FileCache):
             return pickle.load(fp)
         except Exception:
             self.purge(id)
+        finally:
+            if fp is not None:
+                fp.close()
 
     def put(self, id, object):
         bfr = pickle.dumps(object, self.protocol)
